@@ -727,19 +727,20 @@ def match():
             db.session.commit()
 
 
-        return render_template(
-            "documents/match_result.html",
-            result=result,
-            export_result=export_result,
-            pdf_export_result=pdf_export_result,
-            docx_export_result=docx_export_result,
-            txt_export_result=txt_export_result,
-            output_filename=output_filename,
-            pdf_filename=pdf_filename,
-            docx_filename=docx_filename,
-            txt_filename=txt_filename
-        )
-
+    return render_template(
+    "documents/match_result.html",
+    result=result,
+    export_result=export_result,
+    pdf_export_result=pdf_export_result,
+    docx_export_result=docx_export_result,
+    txt_export_result=txt_export_result,
+    output_filename=output_filename,
+    pdf_filename=pdf_filename,
+    docx_filename=docx_filename,
+    txt_filename=txt_filename,
+    main_document_name=main_document.original_name,
+    secondary_document_name=secondary_document.original_name
+)
 
     return render_template(
         "documents/match.html",
