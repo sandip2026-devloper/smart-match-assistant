@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dashboard - Smart Match Assistant</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+    <header class="dashboard-header">
+
+        <div class="header-left">
+
+            <h1>
+                SMART MATCH ASSISTANT
+            </h1>
+
+        </div>
+
+
+        <div class="header-right">
+
+            <span class="user-name">
+                {{ user.name }}
+            </span>
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="logout-button"
+            >
+                Logout
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <main class="dashboard-container">
+
+
+        <!-- Welcome Section -->
+
+        <section class="welcome-section">
+
+            <h2>
+                Welcome, {{ user.name }}!
+            </h2>
+
+            <p>
+                Manage your documents and find matching records easily.
+            </p>
+
+        </section>
+
+
+
+        <!-- Comparison Section -->
+
+        <section class="comparison-section">
+
+            <h2>
+                Choose Comparison Method
+            </h2>
+
+
+            <div class="comparison-cards">
+
+
+                <!-- Main Document + Secondary Documents -->
+
+                <div class="comparison-card">
+
+                    <div class="card-icon">
+                        📄
+                    </div>
+
+                    <h3>
+                        Main Document + Secondary Documents
+                    </h3>
+
+                    <p>
+                        Select one main document and upload multiple
+                        secondary documents to find matching records.
+                    </p>
+
+                    <a
+                        href="{{ url_for('document.upload') }}"
+                        class="start-button"
+                    >
+                        Start Matching
+                    </a>
+
+                </div>
+
+
+
+                <!-- Every Document vs Every Other -->
+
+                <div class="comparison-card">
+
+                    <div class="card-icon">
+                        🔄
+                    </div>
+
+                    <h3>
+                        Every Document vs Every Other
+                    </h3>
+
+                    <p>
+                        Upload multiple documents and compare every
+                        document with the others automatically.
+                    </p>
+
+                    <a
+                        href="{{ url_for('document.upload') }}"
+                        class="start-button secondary-button"
+                    >
+                        Start Comparison
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- Recent Documents -->
+
+        <section class="recent-jobs">
+
+            <h2>
+                Recent Documents
+            </h2>
+
+
+            {% if documents %}
+
+
+                <div class="documents-list">
+
+
+                    {% for document in documents %}
+
+
+                        <div class="document-item">
+
+
+                            <div class="document-info">
+
+                                <h3>
+                                    {{ document.original_name }}
+                                </h3>
+
+
+                                <p>
+                                    Type:
+                                    {{ document.original_type|upper }}
+                                </p>
+
+
+                                <p>
+                                    Status:
+                                    {{ document.status }}
+                                </p>
+
+
+                                <p>
+                                    Document ID:
+                                    {{ document.id }}
+                                </p>
+
+                            </div>
+
+
+                            <div class="document-actions">
+
+                                <a
+                                    href="{{ url_for(
+                                        'document.download_document',
+                                        document_id=document.id
+                                    ) }}"
+                                    class="start-button"
+                                >
+                                    Download
+                                </a>
+
+                            </div>
+
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            {% else %}
+
+
+                <div class="empty-jobs">
+
+                    <div class="empty-icon">
+                        📄
+                    </div>
+
+                    <h3>
+                        No recent documents
+                    </h3>
+
+                    <p>
+                        Your uploaded documents will appear here.
+                    </p>
+
+                </div>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+    </main>
+
+
+</body>
+
+</html>
