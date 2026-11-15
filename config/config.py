@@ -14,3 +14,15 @@ class Config:
     )
 
     DATABASE_URL = os.getenv("DATABASE_URL")
+
+    ENVIRONMENT = os.getenv(
+        "APP_ENV",
+        "development"
+    )
+
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+
+    SESSION_COOKIE_SECURE = (
+        ENVIRONMENT == "production"
+    )
