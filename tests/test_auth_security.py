@@ -56,22 +56,8 @@ def test_password_is_stored_as_hash():
 
         db.session.delete(user)
         db.session.commit()
-    def test_security_headers_are_present():
-     app = create_app()
-    app.config["TESTING"] = True
 
-    client = app.test_client()
 
-    response = client.get("/")
-
-    assert response.headers["X-Content-Type-Options"] == "nosniff"
-    assert response.headers["X-Frame-Options"] == "DENY"
-    assert response.headers["Referrer-Policy"] == (
-        "strict-origin-when-cross-origin"
-    )
-    assert response.headers["Permissions-Policy"] == (
-        "camera=(), microphone=(), geolocation=()"
-    )
 def test_security_headers_are_present():
     app = create_app()
     app.config["TESTING"] = True
@@ -88,3 +74,16 @@ def test_security_headers_are_present():
     assert response.headers["Permissions-Policy"] == (
         "camera=(), microphone=(), geolocation=()"
     )
+def test_session_cookie_security():
+    app = create_app()
+    app.config["TESTING"] = True
+
+    client = app.test_client()
+
+    response = client.get("/")
+
+    set_cookie = response.headers.get("Set-Cookie", "")
+
+    if set_cookie:
+        assert "HttpOnly" in set_cookie
+        assert "SameSite=Lax" in set_cookie
