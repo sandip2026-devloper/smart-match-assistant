@@ -128,3 +128,15 @@ def match_documents(
 
         "duplicate_count": len(duplicate)
     }
+def match_records(
+    main_records,
+    secondary_records
+):
+    """
+    Compatibility wrapper for matching records.
+    """
+
+    return match_documents(
+        main_records=main_records,
+        secondary_records=secondary_records
+    )
