@@ -1,5 +1,4 @@
-import fitz
-
+import pymupdf
 
 def extract_pdf(file_path):
     """
@@ -7,7 +6,7 @@ def extract_pdf(file_path):
     """
 
     try:
-        document = fitz.open(file_path)
+        document = pymupdf.open(file_path)
 
         pages = []
 
