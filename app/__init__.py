@@ -43,7 +43,7 @@ def create_app():
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
     # Secure cookies only in production
-    if app.config.get("FLASK_ENV") == "production":
+    if app.config.get("ENVIRONMENT") == "production":
         app.config["SESSION_COOKIE_SECURE"] = True
         app.config["WTF_CSRF_SSL_STRICT"] = True
     else:
