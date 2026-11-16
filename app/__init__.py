@@ -1,4 +1,7 @@
-from flask import Flask
+
+from flask import Flask, render_template, request
+
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
@@ -19,8 +22,11 @@ limiter = Limiter(
 
 
 def create_app():
+    
 
     app = Flask(__name__)
+    
+
 
     # Load configuration
     app.config.from_object(Config)
@@ -62,24 +68,31 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
 
+        
         from app.models.user import User
 
-        return db.session.get(
+        user = db.session.get(
             User,
             int(user_id)
         )
+        
+        
+
+        return user
 
     # --------------------------------------------------
     # Create database tables
     # --------------------------------------------------
 
     with app.app_context():
-     from app.models.user import User
-     from app.models.document import Document
-     from app.models.document_record import DocumentRecord
-     from app.models.match_result import MatchResult
 
-     db.create_all()
+        from app.models.user import User
+        from app.models.document import Document
+        from app.models.document_record import DocumentRecord
+        from app.models.match_result import MatchResult
+
+        db.create_all()
+
     # --------------------------------------------------
     # Register routes
     # --------------------------------------------------
@@ -119,10 +132,14 @@ def create_app():
 
     @app.route("/")
     def home():
+        return render_template("home.html")
 
-        return """
-        <h1>SMART MATCH ASSISTANT</h1>
-        <p>Application is running successfully.</p>
-        """
+    # --------------------------------------------------
+    # Temporary 500 error logger
+    # --------------------------------------------------
+
+    
 
     return app
+
+        

@@ -473,280 +473,213 @@ def download_document(
         download_name=document_record.original_name
     )
 
-
 @document.route(
     "/match",
     methods=["GET", "POST"]
 )
 @login_required
 def match():
-
+   
     documents = Document.query.filter_by(
         user_id=current_user.id
     ).order_by(
         Document.id.desc()
     ).all()
 
-
-    if request.method == "POST":
-
-        main_document_id = request.form.get(
-            "main_document_id"
+    if request.method == "GET":
+        return render_template(
+            "documents/match.html",
+            documents=documents
         )
 
-        secondary_document_id = request.form.get(
-            "secondary_document_id"
+    main_document_id = request.form.get(
+        "main_document_id"
+    )
+
+    secondary_document_id = request.form.get(
+        "secondary_document_id"
+    )
+
+    if (
+        not main_document_id
+        or not secondary_document_id
+    ):
+        flash(
+            "Please select both documents.",
+            "error"
         )
 
+        return redirect(
+            url_for("document.match")
+        )
 
-        if (
-            not main_document_id
-            or not secondary_document_id
-        ):
-
-            flash(
-                "Please select both documents.",
-                "error"
-            )
-
-            return redirect(
-                url_for("document.match")
-            )
-
-
-        try:
-
-            main_document_id = int(
-                main_document_id
-            )
-
-            secondary_document_id = int(
-                secondary_document_id
-            )
-
-        except ValueError:
-
-            flash(
-                "Invalid document selection.",
-                "error"
-            )
-
-            return redirect(
-                url_for("document.match")
-            )
-
-
-        main_document = db.session.get(
-            Document,
+    try:
+        main_document_id = int(
             main_document_id
         )
 
-        secondary_document = db.session.get(
-            Document,
+        secondary_document_id = int(
             secondary_document_id
         )
 
-
-        if main_document is None:
-            abort(404)
-
-
-        if secondary_document is None:
-            abort(404)
-
-
-        if (
-            main_document.user_id
-            != current_user.id
-        ):
-
-            abort(403)
-
-
-        if (
-            secondary_document.user_id
-            != current_user.id
-        ):
-
-            abort(403)
-
-
-        if (
-            main_document_id
-            == secondary_document_id
-        ):
-
-            flash(
-                "Main and Secondary documents must be different.",
-                "error"
-            )
-
-            return redirect(
-                url_for("document.match")
-            )
-
-
-        result = match_document_pair(
-            main_document_id=main_document_id,
-            secondary_document_id=secondary_document_id,
-            user_id=current_user.id
+    except ValueError:
+        flash(
+            "Invalid document selection.",
+            "error"
         )
 
-
-        if not result.get(
-            "success"
-        ):
-
-            flash(
-                result.get(
-                    "error",
-                    "Matching failed."
-                ),
-                "error"
-            )
-
-            return redirect(
-                url_for("document.match")
-            )
-
-
-        output_folder = get_output_folder()
-
-        os.makedirs(
-            output_folder,
-            exist_ok=True
+        return redirect(
+            url_for("document.match")
         )
 
-
-        output_id = uuid.uuid4().hex
-
-
-        output_filename = (
-            f"match_result_{output_id}.xlsx"
-        )
-
-        pdf_filename = (
-            f"match_result_{output_id}.pdf"
-        )
-
-        docx_filename = (
-            f"match_result_{output_id}.docx"
-        )
-
-        txt_filename = (
-            f"match_result_{output_id}.txt"
-        )
-
-
-        output_path = os.path.join(
-            output_folder,
-            output_filename
-        )
-
-        pdf_path = os.path.join(
-            output_folder,
-            pdf_filename
-        )
-
-        docx_path = os.path.join(
-            output_folder,
-            docx_filename
-        )
-
-        txt_path = os.path.join(
-            output_folder,
-            txt_filename
-        )
-
-
-        # -----------------------------
-        # XLSX Export
-        # -----------------------------
-
-        export_result = (
-            export_match_result_to_xlsx(
-                result,
-                output_path
-            )
-        )
-
-
-        # -----------------------------
-        # PDF Export
-        # -----------------------------
-
-        pdf_export_result = (
-            export_match_result_to_pdf(
-                result,
-                pdf_path
-            )
-        )
-
-
-        # -----------------------------
-        # DOCX Export
-        # -----------------------------
-
-        docx_export_result = (
-            export_match_result_to_docx(
-                result,
-                docx_path
-            )
-        )
-
-
-        # -----------------------------
-        # TXT Export
-        # -----------------------------
-
-        txt_export_result = (
-            export_match_result_to_txt(
-                result,
-                txt_path
-            )
-        )
-
-
-        # -----------------------------
-        # Store result ownership
-        # -----------------------------
-
-        if export_result.get(
-            "success"
-        ):
-
-            match_result_record = MatchResult(
-                user_id=current_user.id,
-                filename=output_filename
-            )
-
-            db.session.add(
-                match_result_record
-            )
-
-            db.session.commit()
-
-
-    return render_template(
-    "documents/match_result.html",
-    result=result,
-    export_result=export_result,
-    pdf_export_result=pdf_export_result,
-    docx_export_result=docx_export_result,
-    txt_export_result=txt_export_result,
-    output_filename=output_filename,
-    pdf_filename=pdf_filename,
-    docx_filename=docx_filename,
-    txt_filename=txt_filename,
-    main_document_name=main_document.original_name,
-    secondary_document_name=secondary_document.original_name
-)
-
-    return render_template(
-        "documents/match.html",
-        documents=documents
+    main_document = db.session.get(
+        Document,
+        main_document_id
     )
 
+    secondary_document = db.session.get(
+        Document,
+        secondary_document_id
+    )
+
+    if main_document is None:
+        abort(404)
+
+    if secondary_document is None:
+        abort(404)
+
+    if main_document.user_id != current_user.id:
+        abort(403)
+
+    if secondary_document.user_id != current_user.id:
+        abort(403)
+
+    if main_document_id == secondary_document_id:
+        flash(
+            "Main and Secondary documents must be different.",
+            "error"
+        )
+
+        return redirect(
+            url_for("document.match")
+        )
+
+    result = match_document_pair(
+        main_document_id=main_document_id,
+        secondary_document_id=secondary_document_id,
+        user_id=current_user.id
+    )
+
+    if not result.get("success"):
+        flash(
+            result.get(
+                "error",
+                "Matching failed."
+            ),
+            "error"
+        )
+
+        return redirect(
+            url_for("document.match")
+        )
+
+    output_folder = get_output_folder()
+
+    os.makedirs(
+        output_folder,
+        exist_ok=True
+    )
+
+    output_id = uuid.uuid4().hex
+
+    output_filename = (
+        f"match_result_{output_id}.xlsx"
+    )
+
+    pdf_filename = (
+        f"match_result_{output_id}.pdf"
+    )
+
+    docx_filename = (
+        f"match_result_{output_id}.docx"
+    )
+
+    txt_filename = (
+        f"match_result_{output_id}.txt"
+    )
+
+    output_path = os.path.join(
+        output_folder,
+        output_filename
+    )
+
+    pdf_path = os.path.join(
+        output_folder,
+        pdf_filename
+    )
+
+    docx_path = os.path.join(
+        output_folder,
+        docx_filename
+    )
+
+    txt_path = os.path.join(
+        output_folder,
+        txt_filename
+    )
+
+    # XLSX Export
+    export_result = export_match_result_to_xlsx(
+        result,
+        output_path
+    )
+
+    # PDF Export
+    pdf_export_result = export_match_result_to_pdf(
+        result,
+        pdf_path
+    )
+
+    # DOCX Export
+    docx_export_result = export_match_result_to_docx(
+        result,
+        docx_path
+    )
+
+    # TXT Export
+    txt_export_result = export_match_result_to_txt(
+        result,
+        txt_path
+    )
+
+    # Store result ownership
+    if export_result.get("success"):
+
+        match_result_record = MatchResult(
+            user_id=current_user.id,
+            filename=output_filename
+        )
+
+        db.session.add(
+            match_result_record
+        )
+
+        db.session.commit()
+
+    return render_template(
+        "documents/match_result.html",
+        result=result,
+        export_result=export_result,
+        pdf_export_result=pdf_export_result,
+        docx_export_result=docx_export_result,
+        txt_export_result=txt_export_result,
+        output_filename=output_filename,
+        pdf_filename=pdf_filename,
+        docx_filename=docx_filename,
+        txt_filename=txt_filename,
+        main_document_name=main_document.original_name,
+        secondary_document_name=secondary_document.original_name
+    )
 
 @document.route(
     "/download-result/<filename>"
