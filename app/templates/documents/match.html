@@ -1,75 +1,848 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Match Documents - Smart Match Assistant</title>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Match Documents - Smart Match Assistant
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f5f3ff,
+                    #e0f2fe
+                );
+
+            min-height: 100vh;
+
+            color: #172033;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .top-header {
+
+            width: 100%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed,
+                    #2563eb
+                );
+
+            color: white;
+
+            padding: 17px 35px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            box-shadow:
+                0 5px 20px
+                rgba(37, 99, 235, 0.25);
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .brand-icon {
+
+            width: 45px;
+
+            height: 45px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255, 255, 255, 0.18);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 23px;
+        }
+
+
+        .brand h1 {
+
+            margin: 0;
+
+            font-size: 23px;
+
+            letter-spacing: 1px;
+        }
+
+
+        .user-area {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .user-name {
+
+            font-weight: 600;
+        }
+
+
+        .logout-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 10px 16px;
+
+            border-radius: 10px;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            background:
+                rgba(255, 255, 255, 0.15);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.35);
+
+            transition: 0.2s;
+        }
+
+
+        .logout-button:hover {
+
+            background: white;
+
+            color: #4f46e5;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .page-container {
+
+            width: 92%;
+
+            max-width: 1000px;
+
+            margin: 35px auto 60px;
+        }
+
+
+        .page-heading {
+
+            margin-bottom: 25px;
+        }
+
+
+        .page-heading h2 {
+
+            margin: 0 0 8px;
+
+            font-size: 30px;
+
+            color: #1e1b4b;
+        }
+
+
+        .page-heading p {
+
+            margin: 0;
+
+            color: #64748b;
+
+            font-size: 16px;
+        }
+
+
+        /* =========================
+           FLASH MESSAGES
+        ========================= */
+
+        .flash-message {
+
+            padding: 13px 16px;
+
+            margin-bottom: 18px;
+
+            border-radius: 11px;
+
+            background: #fef2f2;
+
+            border: 1px solid #fecaca;
+
+            color: #991b1b;
+        }
+
+
+        /* =========================
+           MATCH CARD
+        ========================= */
+
+        .match-card {
+
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 32px;
+
+            box-shadow:
+                0 15px 35px
+                rgba(30, 41, 59, 0.10);
+
+            border:
+                1px solid #e5e7eb;
+        }
+
+
+        .card-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            margin-bottom: 28px;
+        }
+
+
+        .card-title-icon {
+
+            width: 48px;
+
+            height: 48px;
+
+            border-radius: 13px;
+
+            background: #ede9fe;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 24px;
+        }
+
+
+        .card-title h3 {
+
+            margin: 0;
+
+            color: #1f2937;
+
+            font-size: 21px;
+        }
+
+
+        /* =========================
+           DOCUMENT SELECT
+        ========================= */
+
+        .form-group {
+
+            margin-bottom: 25px;
+        }
+
+
+        .form-group label {
+
+            display: block;
+
+            margin-bottom: 9px;
+
+            font-weight: 700;
+
+            color: #374151;
+
+            font-size: 15px;
+        }
+
+
+        .select-wrapper {
+
+            position: relative;
+        }
+
+
+        select {
+
+            width: 100%;
+
+            padding: 14px 45px 14px 15px;
+
+            border-radius: 12px;
+
+            border:
+                2px solid #e5e7eb;
+
+            background: #f8fafc;
+
+            color: #1f2937;
+
+            font-size: 15px;
+
+            outline: none;
+
+            cursor: pointer;
+
+            appearance: none;
+
+            transition: 0.2s;
+        }
+
+
+        select:focus {
+
+            border-color: #6366f1;
+
+            background: white;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(99, 102, 241, 0.12);
+        }
+
+
+        .select-arrow {
+
+            position: absolute;
+
+            right: 16px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            pointer-events: none;
+
+            color: #6366f1;
+
+            font-size: 17px;
+        }
+
+
+        .field-help {
+
+            margin-top: 7px;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           MATCH BUTTON
+        ========================= */
+
+        .button-row {
+
+            margin-top: 30px;
+
+            display: flex;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .match-button {
+
+            border: none;
+
+            padding: 13px 24px;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 8px 18px
+                rgba(79, 70, 229, 0.22);
+
+            transition: 0.2s;
+        }
+
+
+        .match-button:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 11px 23px
+                rgba(79, 70, 229, 0.30);
+        }
+
+
+        .back-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            padding: 13px 20px;
+
+            border-radius: 11px;
+
+            text-decoration: none;
+
+            background: #f1f5f9;
+
+            color: #475569;
+
+            font-weight: 700;
+
+            border:
+                1px solid #e2e8f0;
+
+            transition: 0.2s;
+        }
+
+
+        .back-button:hover {
+
+            background: #e2e8f0;
+        }
+
+
+        /* =========================
+           INFO BOX
+        ========================= */
+
+        .info-box {
+
+            margin-top: 25px;
+
+            padding: 18px;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f5f3ff
+                );
+
+            border:
+                1px solid #ddd6fe;
+        }
+
+
+        .info-box strong {
+
+            color: #4f46e5;
+        }
+
+
+        .info-box p {
+
+            margin: 6px 0 0;
+
+            color: #64748b;
+
+            line-height: 1.5;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 650px) {
+
+            .top-header {
+
+                padding: 15px 18px;
+            }
+
+
+            .brand h1 {
+
+                font-size: 18px;
+            }
+
+
+            .user-name {
+
+                display: none;
+            }
+
+
+            .page-container {
+
+                width: 94%;
+
+                margin-top: 25px;
+            }
+
+
+            .match-card {
+
+                padding: 23px;
+            }
+
+
+            .page-heading h2 {
+
+                font-size: 25px;
+            }
+
+
+            .button-row {
+
+                flex-direction: column;
+            }
+
+
+            .match-button,
+            .back-button {
+
+                width: 100%;
+
+                justify-content: center;
+            }
+
+        }
+
+    </style>
+
 </head>
+
+
 <body>
 
-    <h1>Match Documents</h1>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
+    <!-- HEADER -->
+
+    <header class="top-header">
+
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🔗
+            </div>
+
+            <h1>
+                SMART MATCH ASSISTANT
+            </h1>
+
+        </div>
+
+
+        <div class="user-area">
+
+            <span class="user-name">
+                👤 {{ current_user.name }}
+            </span>
+
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="logout-button"
+            >
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main class="page-container">
+
+
+        <div class="page-heading">
+
+            <h2>
+                Match Documents
+            </h2>
+
+            <p>
+                Select one Main Document and one Secondary
+                Document to find matching records.
+            </p>
+
+        </div>
+
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
             {% for category, message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
 
-    <form method="POST">
+                <div class="flash-message">
+                    {{ message }}
+                </div>
 
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-        <label for="main_document_id">
-            Main Document:
-        </label>
-
-        <select name="main_document_id" id="main_document_id" required>
-            <option value="">Select Main Document</option>
-
-            {% for document in documents %}
-                <option value="{{ document.id }}">
-                    {{ document.original_name }}
-                    (ID: {{ document.id }})
-                </option>
             {% endfor %}
 
-        </select>
+        {% endwith %}
 
-        <br><br>
 
-        <label for="secondary_document_id">
-            Secondary Document:
-        </label>
 
-        <select
-            name="secondary_document_id"
-            id="secondary_document_id"
-            required
-        >
-            <option value="">Select Secondary Document</option>
+        <section class="match-card">
 
-            {% for document in documents %}
-                <option value="{{ document.id }}">
-                    {{ document.original_name }}
-                    (ID: {{ document.id }})
-                </option>
-            {% endfor %}
 
-        </select>
+            <div class="card-title">
 
-        <br><br>
+                <div class="card-title-icon">
+                    🔍
+                </div>
 
-        <button type="submit">
-            Match Documents
-        </button>
+                <h3>
+                    Select Documents
+                </h3>
 
-    </form>
+            </div>
 
-    <br>
 
-    <a href="{{ url_for('auth.dashboard') }}">
-        Back to Dashboard
-    </a>
+
+            <form method="POST">
+
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+
+
+                <!-- MAIN DOCUMENT -->
+
+                <div class="form-group">
+
+                    <label for="main_document_id">
+                        📄 Main Document
+                    </label>
+
+
+                    <div class="select-wrapper">
+
+                        <select
+                            name="main_document_id"
+                            id="main_document_id"
+                            required
+                        >
+
+                            <option value="">
+                                Select Main Document
+                            </option>
+
+
+                            {% for document in documents %}
+
+                                <option
+                                    value="{{ document.id }}"
+                                >
+                                    {{ document.original_name }}
+                                    — ID {{ document.id }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+
+                        <span class="select-arrow">
+                            ▼
+                        </span>
+
+                    </div>
+
+
+                    <div class="field-help">
+                        Select the document containing the
+                        complete/main records.
+                    </div>
+
+                </div>
+
+
+
+                <!-- SECONDARY DOCUMENT -->
+
+                <div class="form-group">
+
+                    <label for="secondary_document_id">
+                        📋 Secondary Document
+                    </label>
+
+
+                    <div class="select-wrapper">
+
+                        <select
+                            name="secondary_document_id"
+                            id="secondary_document_id"
+                            required
+                        >
+
+                            <option value="">
+                                Select Secondary Document
+                            </option>
+
+
+                            {% for document in documents %}
+
+                                <option
+                                    value="{{ document.id }}"
+                                >
+                                    {{ document.original_name }}
+                                    — ID {{ document.id }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+
+                        <span class="select-arrow">
+                            ▼
+                        </span>
+
+                    </div>
+
+
+                    <div class="field-help">
+                        Select the document containing the
+                        records you want to match.
+                    </div>
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="button-row">
+
+                    <button
+                        type="submit"
+                        class="match-button"
+                    >
+                        🔎 Match Documents
+                    </button>
+
+
+                    <a
+                        href="{{ url_for('auth.dashboard') }}"
+                        class="back-button"
+                    >
+                        ← Back to Dashboard
+                    </a>
+
+                </div>
+
+
+            </form>
+
+
+
+            <div class="info-box">
+
+                <strong>
+                    💡 How it works
+                </strong>
+
+                <p>
+                    The system checks identifiers first and then
+                    uses intelligent matching methods to find
+                    the best matching records. Ambiguous matches
+                    are kept separate instead of being guessed.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
 
 </body>
+
 </html>

@@ -2,66 +2,324 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Login - Smart Match Assistant</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed,
+                    #2563eb
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 430px;
+        }
+
+        .brand {
+            text-align: center;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .brand-icon {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 15px;
+
+            border-radius: 18px;
+
+            background:
+                rgba(255, 255, 255, 0.18);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 32px;
+
+            box-shadow:
+                0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 25px;
+            letter-spacing: 1px;
+        }
+
+        .brand p {
+            margin-top: 8px;
+            opacity: 0.85;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 22px;
+            padding: 35px;
+
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.22);
+        }
+
+        .login-card h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #1e1b4b;
+            font-size: 27px;
+        }
+
+        .subtitle {
+            margin-top: 0;
+            margin-bottom: 28px;
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+
+            border: 2px solid #e5e7eb;
+            border-radius: 11px;
+
+            font-size: 15px;
+            outline: none;
+
+            background: #f9fafb;
+
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #6366f1;
+            background: white;
+
+            box-shadow:
+                0 0 0 4px rgba(99, 102, 241, 0.12);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+
+            border: none;
+            border-radius: 11px;
+
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            box-shadow:
+                0 8px 20px rgba(79, 70, 229, 0.28);
+
+            transition: 0.2s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 23px;
+            color: #6b7280;
+        }
+
+        .register-link a {
+            color: #4f46e5;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .flash-message {
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        @media (max-width: 500px) {
+
+            .login-card {
+                padding: 25px;
+            }
+
+            .brand h1 {
+                font-size: 21px;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <h1>SMART MATCH ASSISTANT</h1>
-
-    <h2>Login</h2>
+    <div class="login-wrapper">
 
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
+        <div class="brand">
 
-        {% for category, message in messages %}
+            <div class="brand-icon">
+                🔗
+            </div>
 
-            <p>{{ message }}</p>
+            <h1>
+                SMART MATCH ASSISTANT
+            </h1>
 
-        {% endfor %}
+            <p>
+                Smart document matching made simple
+            </p>
 
-    {% endwith %}
-
-
-    <form method="POST">
-
-        <!-- CSRF Protection -->
-        <input
-            type="hidden"
-            name="csrf_token"
-            value="{{ csrf_token() }}"
-        >
-
-        <label>Email:</label><br>
-
-        <input
-            type="email"
-            name="email"
-            required
-        >
-
-        <br><br>
+        </div>
 
 
-        <label>Password:</label><br>
+        <div class="login-card">
 
-        <input
-            type="password"
-            name="password"
-            required
-        >
+            <h2>
+                Welcome Back
+            </h2>
 
-        <br><br>
+            <p class="subtitle">
+                Login to continue to your dashboard.
+            </p>
 
 
-        <button type="submit">
-            Login
-        </button>
+            {% with messages = get_flashed_messages(with_categories=true) %}
 
-    </form>
+                {% for category, message in messages %}
+
+                    <div class="flash-message">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endwith %}
+
+
+            <form method="POST">
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        📧 Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        🔒 Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+                    🔐 Login
+                </button>
+
+            </form>
+
+
+            <div class="register-link">
+
+                Don't have an account?
+
+                <a href="{{ url_for('auth.register') }}">
+                    Create Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </body>
 

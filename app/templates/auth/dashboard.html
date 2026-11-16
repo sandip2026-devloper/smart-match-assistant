@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,12 +10,651 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Dashboard - Smart Match Assistant</title>
+    <title>
+        Dashboard - Smart Match Assistant
+    </title>
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/dashboard.css') }}"
-    >
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f5f3ff,
+                    #e0f2fe
+                );
+
+            color: #172033;
+
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .top-header {
+
+            width: 100%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed,
+                    #2563eb
+                );
+
+            color: white;
+
+            padding: 17px 35px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            box-shadow:
+                0 5px 20px
+                rgba(37, 99, 235, 0.25);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .brand-icon {
+
+            width: 45px;
+
+            height: 45px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255, 255, 255, 0.18);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 23px;
+        }
+
+
+        .brand h1 {
+
+            margin: 0;
+
+            font-size: 23px;
+
+            letter-spacing: 1px;
+        }
+
+
+        .user-area {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .user-name {
+
+            font-weight: 600;
+
+            font-size: 15px;
+        }
+
+
+        .logout-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 10px 16px;
+
+            border-radius: 10px;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            background:
+                rgba(255, 255, 255, 0.15);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.35);
+
+            transition: 0.2s;
+        }
+
+
+        .logout-button:hover {
+
+            background: white;
+
+            color: #4f46e5;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .dashboard-container {
+
+            width: 92%;
+
+            max-width: 1200px;
+
+            margin: 35px auto 60px;
+        }
+
+
+        /* =========================
+           WELCOME
+        ========================= */
+
+        .welcome-card {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: white;
+
+            border-radius: 22px;
+
+            padding: 30px 35px;
+
+            box-shadow:
+                0 15px 35px
+                rgba(79, 70, 229, 0.20);
+
+            margin-bottom: 30px;
+        }
+
+
+        .welcome-card h2 {
+
+            margin: 0 0 8px;
+
+            font-size: 29px;
+        }
+
+
+        .welcome-card p {
+
+            margin: 0;
+
+            opacity: 0.9;
+
+            font-size: 16px;
+        }
+
+
+        /* =========================
+           SECTION TITLE
+        ========================= */
+
+        .section-title {
+
+            margin: 0 0 18px;
+
+            color: #1e1b4b;
+
+            font-size: 23px;
+        }
+
+
+        /* =========================
+           COMPARISON CARDS
+        ========================= */
+
+        .comparison-cards {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 24px;
+
+            margin-bottom: 38px;
+        }
+
+
+        .comparison-card {
+
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 28px;
+
+            border:
+                1px solid
+                #e5e7eb;
+
+            box-shadow:
+                0 12px 30px
+                rgba(30, 41, 59, 0.09);
+
+            transition: 0.25s;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .comparison-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 5px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #4f46e5,
+                    #7c3aed,
+                    #2563eb
+                );
+        }
+
+
+        .comparison-card:hover {
+
+            transform:
+                translateY(-5px);
+
+            box-shadow:
+                0 18px 38px
+                rgba(30, 41, 59, 0.14);
+        }
+
+
+        .card-icon {
+
+            width: 55px;
+
+            height: 55px;
+
+            border-radius: 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 27px;
+
+            background: #ede9fe;
+
+            color: #6d28d9;
+
+            margin-bottom: 18px;
+        }
+
+
+        .comparison-card h3 {
+
+            margin: 0 0 12px;
+
+            font-size: 20px;
+
+            color: #1f2937;
+        }
+
+
+        .comparison-card p {
+
+            color: #6b7280;
+
+            line-height: 1.6;
+
+            min-height: 72px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .start-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            padding: 12px 19px;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: white;
+
+            box-shadow:
+                0 7px 17px
+                rgba(79, 70, 229, 0.20);
+
+            transition: 0.2s;
+        }
+
+
+        .start-button:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 10px 22px
+                rgba(79, 70, 229, 0.28);
+        }
+
+
+        .secondary-button {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+                );
+        }
+
+
+        /* =========================
+           RECENT DOCUMENTS
+        ========================= */
+
+        .documents-section {
+
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 12px 30px
+                rgba(30, 41, 59, 0.08);
+
+            border:
+                1px solid
+                #e5e7eb;
+        }
+
+
+        .documents-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 14px;
+        }
+
+
+        .document-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 18px;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f8fafc,
+                    #eef2ff
+                );
+
+            border:
+                1px solid
+                #e5e7eb;
+        }
+
+
+        .document-info {
+
+            min-width: 0;
+        }
+
+
+        .document-info h3 {
+
+            margin: 0 0 8px;
+
+            color: #1f2937;
+
+            font-size: 17px;
+
+            word-break: break-word;
+        }
+
+
+        .document-info p {
+
+            display: inline-block;
+
+            margin: 3px 12px 3px 0;
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+
+        .document-actions {
+
+            flex-shrink: 0;
+        }
+
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty-state {
+
+            text-align: center;
+
+            padding: 45px 20px;
+
+            color: #6b7280;
+        }
+
+
+        .empty-icon {
+
+            width: 65px;
+
+            height: 65px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 18px;
+
+            background: #ede9fe;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 30px;
+        }
+
+
+        .empty-state h3 {
+
+            color: #374151;
+
+            margin-bottom: 8px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 800px) {
+
+            .top-header {
+
+                padding: 15px 18px;
+            }
+
+
+            .brand h1 {
+
+                font-size: 18px;
+            }
+
+
+            .user-name {
+
+                display: none;
+            }
+
+
+            .dashboard-container {
+
+                width: 94%;
+            }
+
+
+            .comparison-cards {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .document-item {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+
+            .document-actions {
+
+                width: 100%;
+            }
+
+
+            .document-actions .start-button {
+
+                width: 100%;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .welcome-card {
+
+                padding: 25px;
+            }
+
+
+            .welcome-card h2 {
+
+                font-size: 24px;
+            }
+
+
+            .comparison-card {
+
+                padding: 23px;
+            }
+
+
+            .documents-section {
+
+                padding: 20px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -24,9 +662,16 @@
 <body>
 
 
-    <header class="dashboard-header">
+    <!-- HEADER -->
 
-        <div class="header-left">
+    <header class="top-header">
+
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🔗
+            </div>
 
             <h1>
                 SMART MATCH ASSISTANT
@@ -35,57 +680,62 @@
         </div>
 
 
-        <div class="header-right">
+        <div class="user-area">
 
             <span class="user-name">
-                {{ user.name }}
+                👤 {{ user.name }}
             </span>
+
 
             <a
                 href="{{ url_for('auth.logout') }}"
                 class="logout-button"
             >
-                Logout
+                🚪 Logout
             </a>
 
         </div>
+
 
     </header>
 
 
 
+    <!-- MAIN -->
+
     <main class="dashboard-container">
 
 
-        <!-- Welcome Section -->
+        <!-- WELCOME -->
 
-        <section class="welcome-section">
+        <section class="welcome-card">
 
             <h2>
-                Welcome, {{ user.name }}!
+                Welcome, {{ user.name }}! 👋
             </h2>
 
             <p>
-                Manage your documents and find matching records easily.
+                Manage your documents and find matching records
+                quickly and securely.
             </p>
 
         </section>
 
 
 
-        <!-- Comparison Section -->
+        <!-- COMPARISON METHODS -->
 
-        <section class="comparison-section">
+        <section>
 
-            <h2>
-                Choose Comparison Method
+            <h2 class="section-title">
+                🔍 Choose Comparison Method
             </h2>
 
 
             <div class="comparison-cards">
 
 
-                <!-- Main Document + Secondary Documents -->
+                <!-- METHOD 1 -->
 
                 <div class="comparison-card">
 
@@ -98,19 +748,24 @@
                     </h3>
 
                     <p>
-                        Select one main document and upload multiple
-                        secondary documents to find matching records.
+                        Select one main document and upload
+                        multiple secondary documents to find
+                        matching records.
                     </p>
 
-                    <a href="{{ url_for('document.match') }}">
-                         Start Matching
+
+                    <a
+                        href="{{ url_for('document.match') }}"
+                        class="start-button"
+                    >
+                        🔎 Start Matching
                     </a>
 
                 </div>
 
 
 
-                <!-- Every Document vs Every Other -->
+                <!-- METHOD 2 -->
 
                 <div class="comparison-card">
 
@@ -123,16 +778,18 @@
                     </h3>
 
                     <p>
-                        Upload multiple documents and compare every
-                        document with the others automatically.
+                        Upload multiple documents and compare
+                        every newly uploaded document with
+                        every other selected document.
                     </p>
 
+
                     <a
-    href="{{ url_for('document.compare_all') }}"
-    class="start-button secondary-button"
->
-    Start Comparison
-</a>
+                        href="{{ url_for('document.compare_all_upload') }}"
+                        class="start-button secondary-button"
+                    >
+                        📤 Upload & Compare
+                    </a>
 
                 </div>
 
@@ -143,12 +800,13 @@
 
 
 
-        <!-- Recent Documents -->
+        <!-- RECENT DOCUMENTS -->
 
-        <section class="recent-jobs">
+        <section class="documents-section">
 
-            <h2>
-                Recent Documents
+
+            <h2 class="section-title">
+                📁 Recent Documents
             </h2>
 
 
@@ -167,6 +825,7 @@
                             <div class="document-info">
 
                                 <h3>
+                                    📄
                                     {{ document.original_name }}
                                 </h3>
 
@@ -184,7 +843,7 @@
 
 
                                 <p>
-                                    Document ID:
+                                    ID:
                                     {{ document.id }}
                                 </p>
 
@@ -200,7 +859,7 @@
                                     ) }}"
                                     class="start-button"
                                 >
-                                    Download
+                                    ⬇ Download
                                 </a>
 
                             </div>
@@ -218,14 +877,14 @@
             {% else %}
 
 
-                <div class="empty-jobs">
+                <div class="empty-state">
 
                     <div class="empty-icon">
-                        📄
+                        📁
                     </div>
 
                     <h3>
-                        No recent documents
+                        No Recent Documents
                     </h3>
 
                     <p>

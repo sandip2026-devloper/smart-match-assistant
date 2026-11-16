@@ -2,78 +2,357 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Register - Smart Match Assistant</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed,
+                    #2563eb
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 25px;
+        }
+
+        .register-wrapper {
+            width: 100%;
+            max-width: 470px;
+        }
+
+        .brand {
+            text-align: center;
+            color: white;
+            margin-bottom: 22px;
+        }
+
+        .brand-icon {
+            width: 62px;
+            height: 62px;
+
+            margin: 0 auto 13px;
+
+            border-radius: 17px;
+
+            background:
+                rgba(255, 255, 255, 0.18);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 30px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        .brand p {
+            margin-top: 7px;
+            opacity: 0.85;
+        }
+
+        .register-card {
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.22);
+        }
+
+        .register-card h2 {
+            margin: 0 0 8px;
+
+            color: #1e1b4b;
+            font-size: 27px;
+        }
+
+        .subtitle {
+            margin-top: 0;
+            margin-bottom: 27px;
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 19px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-weight: 700;
+            color: #374151;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 14px 15px;
+
+            border: 2px solid #e5e7eb;
+            border-radius: 11px;
+
+            background: #f9fafb;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #6366f1;
+            background: white;
+
+            box-shadow:
+                0 0 0 4px rgba(99, 102, 241, 0.12);
+        }
+
+        .register-button {
+            width: 100%;
+
+            padding: 14px;
+
+            border: none;
+            border-radius: 11px;
+
+            color: white;
+
+            font-size: 16px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            box-shadow:
+                0 8px 20px rgba(79, 70, 229, 0.28);
+
+            transition: 0.2s;
+        }
+
+        .register-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .login-link {
+            text-align: center;
+
+            margin-top: 22px;
+
+            color: #6b7280;
+        }
+
+        .login-link a {
+            color: #4f46e5;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .flash-message {
+            padding: 12px 14px;
+
+            margin-bottom: 18px;
+
+            border-radius: 10px;
+
+            background: #fef2f2;
+
+            border: 1px solid #fecaca;
+
+            color: #991b1b;
+        }
+
+        @media (max-width: 500px) {
+
+            .register-card {
+                padding: 25px;
+            }
+
+            .brand h1 {
+                font-size: 21px;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <h1>SMART MATCH ASSISTANT</h1>
-
-    <h2>Create Account</h2>
+    <div class="register-wrapper">
 
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
+        <div class="brand">
 
-        {% for category, message in messages %}
+            <div class="brand-icon">
+                🔗
+            </div>
 
-            <p>{{ message }}</p>
+            <h1>
+                SMART MATCH ASSISTANT
+            </h1>
 
-        {% endfor %}
+            <p>
+                Create your account and start matching
+            </p>
 
-    {% endwith %}
-
-
-    <form method="POST">
-
-        <!-- CSRF Protection -->
-        <input
-            type="hidden"
-            name="csrf_token"
-            value="{{ csrf_token() }}"
-        >
+        </div>
 
 
-        <label>Name:</label><br>
+        <div class="register-card">
 
-        <input
-            type="text"
-            name="name"
-            required
-        >
+            <h2>
+                Create Account
+            </h2>
 
-        <br><br>
-
-
-        <label>Email:</label><br>
-
-        <input
-            type="email"
-            name="email"
-            required
-        >
-
-        <br><br>
+            <p class="subtitle">
+                Register to manage your documents securely.
+            </p>
 
 
-        <label>Password:</label><br>
+            {% with messages = get_flashed_messages(with_categories=true) %}
 
-        <input
-            type="password"
-            name="password"
-            required
-        >
+                {% for category, message in messages %}
 
-        <br><br>
+                    <div class="flash-message">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endwith %}
 
 
-        <button type="submit">
-            Register
-        </button>
+            <form method="POST">
 
-    </form>
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+
+                <div class="form-group">
+
+                    <label for="name">
+                        👤 Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        📧 Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        🔒 Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="register-button"
+                >
+                    ✨ Create Account
+                </button>
+
+            </form>
+
+
+            <div class="login-link">
+
+                Already have an account?
+
+                <a href="{{ url_for('auth.login') }}">
+                    Login
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </body>
 

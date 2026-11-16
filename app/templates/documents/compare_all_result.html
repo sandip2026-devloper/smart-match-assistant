@@ -1,79 +1,891 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Comparison Results - Smart Match Assistant</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(
+                135deg,
+                #eef2ff,
+                #f5f3ff,
+                #e0f2fe
+            );
+            min-height: 100vh;
+            color: #172033;
+        }
+
+        /* HEADER */
+
+        .top-header {
+            width: 100%;
+            background: linear-gradient(
+                135deg,
+                #4f46e5,
+                #7c3aed,
+                #2563eb
+            );
+            color: white;
+            padding: 17px 35px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 5px 20px rgba(37, 99, 235, 0.25);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 23px;
+            letter-spacing: 1px;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .logout-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.35);
+        }
+
+        .logout-button:hover {
+            background: white;
+            color: #4f46e5;
+        }
+
+        /* PAGE */
+
+        .page-container {
+            width: 92%;
+            max-width: 1150px;
+            margin: 35px auto 60px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h2 {
+            margin: 0 0 8px;
+            font-size: 30px;
+            color: #1e1b4b;
+        }
+
+        .page-heading p {
+            margin: 0;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* TOP SUMMARY */
+
+        .summary-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 15px 35px rgba(30,41,59,.10);
+            border: 1px solid #e5e7eb;
+        }
+
+        .summary-title {
+            margin: 0 0 18px;
+            color: #1f2937;
+        }
+
+        .summary-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 18px;
+            border-radius: 12px;
+            background: #ede9fe;
+            color: #6d28d9;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* COMPARISON CARD */
+
+        .comparison-card {
+            background: white;
+            border-radius: 22px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 15px 35px rgba(30,41,59,.10);
+            border: 1px solid #e5e7eb;
+        }
+
+        .comparison-title {
+            background: linear-gradient(
+                135deg,
+                #eef2ff,
+                #f5f3ff
+            );
+            border: 1px solid #ddd6fe;
+            border-radius: 15px;
+            padding: 18px;
+            margin-bottom: 22px;
+        }
+
+        .comparison-title h3 {
+            margin: 0;
+            color: #3730a3;
+            font-size: 19px;
+            line-height: 1.5;
+        }
+
+        /* RECORD COUNTS */
+
+        .record-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .record-box {
+            padding: 18px;
+            border-radius: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .record-box span {
+            display: block;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .record-box strong {
+            color: #1e293b;
+            font-size: 22px;
+        }
+
+        /* MATCH SUMMARY */
+
+        .section-title {
+            margin: 25px 0 15px;
+            color: #1f2937;
+            font-size: 19px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .stat-box {
+            padding: 18px;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .stat-box strong {
+            display: block;
+            font-size: 26px;
+            margin-bottom: 5px;
+        }
+
+        .stat-box span {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .matched-stat {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #047857;
+        }
+
+        .unmatched-stat {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #c2410c;
+        }
+
+        .duplicate-stat {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+        }
+
+        /* RESULT SECTIONS */
+
+        .result-section {
+            margin-top: 25px;
+        }
+
+        .result-section-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 14px;
+            font-size: 18px;
+        }
+
+        .green-title {
+            color: #047857;
+        }
+
+        .orange-title {
+            color: #c2410c;
+        }
+
+        .red-title {
+            color: #b91c1c;
+        }
+
+        .result-card {
+            padding: 18px;
+            margin-bottom: 14px;
+            border-radius: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .matched-card {
+            border-left: 5px solid #10b981;
+        }
+
+        .unmatched-card {
+            border-left: 5px solid #f97316;
+        }
+
+        .duplicate-card {
+            border-left: 5px solid #ef4444;
+        }
+
+        .result-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-green {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .badge-orange {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+        .badge-red {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .record-heading {
+            margin: 14px 0 8px;
+            font-size: 15px;
+            color: #374151;
+        }
+
+        .record-data {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .record-data li {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .record-data li:last-child {
+            border-bottom: none;
+        }
+
+        .record-data strong {
+            color: #1f2937;
+        }
+
+        /* EMPTY */
+
+        .empty-card {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(30,41,59,.08);
+            color: #64748b;
+        }
+
+        /* BUTTONS */
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 13px 21px;
+            border-radius: 11px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .upload-button {
+            color: white;
+            background: linear-gradient(
+                135deg,
+                #4f46e5,
+                #7c3aed
+            );
+            box-shadow: 0 8px 18px rgba(79,70,229,.22);
+        }
+
+        .dashboard-button {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 700px) {
+
+            .top-header {
+                padding: 15px 18px;
+            }
+
+            .brand h1 {
+                font-size: 18px;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .page-container {
+                width: 94%;
+                margin-top: 25px;
+            }
+
+            .comparison-card,
+            .summary-card {
+                padding: 20px;
+            }
+
+            .page-heading h2 {
+                font-size: 25px;
+            }
+
+            .record-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+
+            .action-button {
+                width: 100%;
+            }
+        }
+
+    </style>
+
 </head>
 
 <body>
 
-    <h1>Every Document vs Every Other</h1>
+<header class="top-header">
 
-    <p>
-        Comparison completed successfully.
-    </p>
+    <div class="brand">
+
+        <div class="brand-icon">
+            🔗
+        </div>
+
+        <h1>
+            SMART MATCH ASSISTANT
+        </h1>
+
+    </div>
+
+    <div class="user-area">
+
+        <span class="user-name">
+            👤 {{ current_user.name }}
+        </span>
+
+        <a
+            href="{{ url_for('auth.logout') }}"
+            class="logout-button"
+        >
+            🚪 Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+<main class="page-container">
+
+
+    <div class="page-heading">
+
+        <h2>
+            Every Document vs Every Other
+        </h2>
+
+        <p>
+            Comparison results for the documents selected in this upload session.
+        </p>
+
+    </div>
+
 
     {% if comparison_results %}
 
-        <p>
-            Total comparisons:
-            {{ comparison_results|length }}
-        </p>
+
+        <section class="summary-card">
+
+            <h3 class="summary-title">
+                📊 Comparison Summary
+            </h3>
+
+            <span class="summary-number">
+                {{ comparison_results|length }}
+                Comparison{% if comparison_results|length != 1 %}s{% endif %}
+            </span>
+
+        </section>
+
 
         {% for result in comparison_results %}
 
-            <hr>
+            <section class="comparison-card">
 
-            <h2>
-                {{ result.main_document.original_name }}
-                vs
-                {{ result.secondary_document.original_name }}
-            </h2>
 
-            <p>
-                Main Records:
-                {{ result.main_record_count }}
-            </p>
+                <div class="comparison-title">
 
-            <p>
-                Secondary Records:
-                {{ result.secondary_record_count }}
-            </p>
+                    <h3>
 
-            <h3>Matching Summary</h3>
+                        📄
+                        {{ result.main_document.original_name }}
 
-            <p>
-                Matched:
-                {{ result.matched_count }}
-            </p>
+                        <br>
 
-            <p>
-                Unmatched:
-                {{ result.unmatched_count }}
-            </p>
+                        ↕️
 
-            <p>
-                Duplicate / Ambiguous:
-                {{ result.duplicate_count }}
-            </p>
+                        <br>
+
+                        📄
+                        {{ result.secondary_document.original_name }}
+
+                    </h3>
+
+                </div>
+
+
+                <div class="record-grid">
+
+                    <div class="record-box">
+
+                        <span>
+                            Main Document Records
+                        </span>
+
+                        <strong>
+                            {{ result.main_record_count }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="record-box">
+
+                        <span>
+                            Secondary Document Records
+                        </span>
+
+                        <strong>
+                            {{ result.secondary_record_count }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <h3 class="section-title">
+                    📈 Matching Summary
+                </h3>
+
+
+                <div class="stats-grid">
+
+                    <div class="stat-box matched-stat">
+
+                        <strong>
+                            {{ result.matched_count }}
+                        </strong>
+
+                        <span>
+                            Matched
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-box unmatched-stat">
+
+                        <strong>
+                            {{ result.unmatched_count }}
+                        </strong>
+
+                        <span>
+                            Unmatched
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-box duplicate-stat">
+
+                        <strong>
+                            {{ result.duplicate_count }}
+                        </strong>
+
+                        <span>
+                            Duplicate / Ambiguous
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                {% if result.matched %}
+
+                    <div class="result-section">
+
+                        <h3 class="result-section-title green-title">
+                            ✅ Matched Records
+                        </h3>
+
+
+                        {% for match in result.matched %}
+
+                            <div class="result-card matched-card">
+
+                                <div class="result-info">
+
+                                    <span class="badge badge-green">
+
+                                        Match Type:
+                                        {{ match.match_type }}
+
+                                    </span>
+
+                                    <span class="badge badge-green">
+
+                                        Confidence:
+                                        {{ "%.2f"|format(match.confidence * 100) }}%
+
+                                    </span>
+
+                                </div>
+
+
+                                {% if match.matches %}
+
+                                    {% for main_record in match.matches %}
+
+                                        <h4 class="record-heading">
+                                            Main Record
+                                        </h4>
+
+                                        <ul class="record-data">
+
+                                            {% for key, value in main_record.raw_record.items() %}
+
+                                                <li>
+
+                                                    <strong>
+                                                        {{ key }}:
+                                                    </strong>
+
+                                                    {{ value }}
+
+                                                </li>
+
+                                            {% endfor %}
+
+                                        </ul>
+
+                                    {% endfor %}
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if result.unmatched %}
+
+                    <div class="result-section">
+
+                        <h3 class="result-section-title orange-title">
+                            ⚠️ Unmatched Records
+                        </h3>
+
+
+                        {% for item in result.unmatched %}
+
+                            <div class="result-card unmatched-card">
+
+                                <div class="result-info">
+
+                                    <span class="badge badge-orange">
+
+                                        Confidence:
+                                        {{ "%.2f"|format(item.confidence * 100) }}%
+
+                                    </span>
+
+                                </div>
+
+
+                                <h4 class="record-heading">
+                                    Secondary Record
+                                </h4>
+
+
+                                <ul class="record-data">
+
+                                    {% for key, value in item.secondary_record.raw_record.items() %}
+
+                                        <li>
+
+                                            <strong>
+                                                {{ key }}:
+                                            </strong>
+
+                                            {{ value }}
+
+                                        </li>
+
+                                    {% endfor %}
+
+                                </ul>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if result.duplicate %}
+
+                    <div class="result-section">
+
+                        <h3 class="result-section-title red-title">
+                            🔴 Duplicate / Ambiguous Records
+                        </h3>
+
+
+                        {% for item in result.duplicate %}
+
+                            <div class="result-card duplicate-card">
+
+                                <div class="result-info">
+
+                                    <span class="badge badge-red">
+
+                                        Confidence:
+                                        {{ "%.2f"|format(item.confidence * 100) }}%
+
+                                    </span>
+
+                                </div>
+
+
+                                <h4 class="record-heading">
+                                    Secondary Record
+                                </h4>
+
+
+                                <ul class="record-data">
+
+                                    {% for key, value in item.secondary_record.raw_record.items() %}
+
+                                        <li>
+
+                                            <strong>
+                                                {{ key }}:
+                                            </strong>
+
+                                            {{ value }}
+
+                                        </li>
+
+                                    {% endfor %}
+
+                                </ul>
+
+
+                                <h4 class="record-heading">
+                                    Possible Main Records
+                                </h4>
+
+
+                                {% for main_record in item.matches %}
+
+                                    <ul class="record-data">
+
+                                        {% for key, value in main_record.raw_record.items() %}
+
+                                            <li>
+
+                                                <strong>
+                                                    {{ key }}:
+                                                </strong>
+
+                                                {{ value }}
+
+                                            </li>
+
+                                        {% endfor %}
+
+                                    </ul>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+
+            </section>
 
         {% endfor %}
 
+
     {% else %}
 
-        <p>
-            No comparison results were generated.
-        </p>
+
+        <div class="empty-card">
+
+            <h3>
+                No Comparison Results
+            </h3>
+
+            <p>
+                No comparison results were generated.
+            </p>
+
+        </div>
+
 
     {% endif %}
 
-    <br>
 
-    <a href="{{ url_for('auth.dashboard') }}">
-        Back to Dashboard
-    </a>
+    <div class="button-row">
+
+        <a
+            href="{{ url_for('document.compare_all_upload') }}"
+            class="action-button upload-button"
+        >
+            📤 Upload More Documents
+        </a>
+
+
+        <a
+            href="{{ url_for('auth.dashboard') }}"
+            class="action-button dashboard-button"
+        >
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+
+</main>
 
 </body>
+
 </html>

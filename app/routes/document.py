@@ -10,9 +10,9 @@ from flask import (
     url_for,
     flash,
     send_from_directory,
-    abort
+    abort,
+    session
 )
-
 from flask_login import (
     login_required,
     current_user
@@ -397,6 +397,209 @@ def upload():
 
     return render_template(
         "documents/upload.html"
+    )
+@document.route(
+    "/compare-all/upload",
+    methods=["GET", "POST"]
+)
+@login_required
+@limiter.limit(
+    "20 per minute",
+    methods=["POST"]
+)
+def compare_all_upload():
+
+    if request.method == "POST":
+
+        files = request.files.getlist("files")
+
+        if not files:
+
+            flash(
+                "Please select at least one file.",
+                "error"
+            )
+
+            return redirect(
+                url_for("document.compare_all_upload")
+            )
+
+        uploaded_count = 0
+        uploaded_document_ids = []
+
+        for file in files:
+
+            if not file or not file.filename:
+                continue
+
+            if not allowed_file(file.filename):
+
+                flash(
+                    f"Unsupported file type: {file.filename}",
+                    "error"
+                )
+
+                continue
+
+            extension = file.filename.rsplit(
+                ".",
+                1
+            )[1].lower()
+
+            file.seek(
+                0,
+                os.SEEK_END
+            )
+
+            file_size = file.tell()
+
+            file.seek(0)
+
+            if file_size > MAX_FILE_SIZE:
+
+                flash(
+                    f"File too large: {file.filename}",
+                    "error"
+                )
+
+                continue
+
+            safe_original_name = secure_filename(
+                file.filename
+            )
+
+            if not safe_original_name:
+
+                flash(
+                    f"Invalid filename: {file.filename}",
+                    "error"
+                )
+
+                continue
+
+            stored_name = (
+                f"{uuid.uuid4().hex}.{extension}"
+            )
+
+            upload_folder = get_upload_folder()
+
+            os.makedirs(
+                upload_folder,
+                exist_ok=True
+            )
+
+            file_path = os.path.join(
+                upload_folder,
+                stored_name
+            )
+
+            try:
+
+                file.save(file_path)
+
+                if not validate_file_content(
+                    file_path,
+                    extension
+                ):
+
+                    if os.path.exists(file_path):
+
+                        os.remove(file_path)
+
+                    flash(
+                        f"Invalid file content: {file.filename}",
+                        "error"
+                    )
+
+                    continue
+
+                new_document = Document(
+                    user_id=current_user.id,
+                    original_name=safe_original_name,
+                    stored_name=stored_name,
+                    original_type=extension,
+                    status="uploaded"
+                )
+
+                db.session.add(new_document)
+                db.session.commit()
+
+                processing_result = (
+                    process_and_store_document(
+                        document_id=new_document.id,
+                        user_id=current_user.id
+                    )
+                )
+
+                if processing_result.get("success"):
+
+                    uploaded_count += 1
+
+                    uploaded_document_ids.append(
+                        new_document.id
+                    )
+
+                else:
+
+                    flash(
+                        (
+                            f"Processing failed for "
+                            f"{file.filename}: "
+                            f"{processing_result.get('error', 'Unknown error')}"
+                        ),
+                        "error"
+                    )
+
+            except Exception as error:
+
+                db.session.rollback()
+
+                if os.path.exists(file_path):
+
+                    try:
+
+                        os.remove(file_path)
+
+                    except OSError:
+
+                        pass
+
+                flash(
+                    f"Upload failed for {file.filename}: {error}",
+                    "error"
+                )
+
+        if uploaded_count:
+
+            session["compare_all_document_ids"] = (
+                uploaded_document_ids
+            )
+
+            flash(
+                (
+                    f"{uploaded_count} document(s) uploaded "
+                    "and processed successfully."
+                ),
+                "success"
+            )
+
+        else:
+
+            flash(
+                "No documents were uploaded successfully.",
+                "error"
+            )
+
+            return redirect(
+                url_for("document.compare_all_upload")
+            )
+
+        return redirect(
+            url_for("document.compare_all")
+        )
+
+    return render_template(
+        "documents/compare_all_upload.html"
     )
 
 
@@ -879,9 +1082,26 @@ def download_txt_result(filename):
 @login_required
 def compare_all():
 
-    documents = Document.query.filter_by(
-        user_id=current_user.id,
-        status="processed"
+    document_ids = session.pop(
+        "compare_all_document_ids",
+        []
+    )
+
+    if len(document_ids) < 2:
+
+        flash(
+            "Please upload at least two documents to compare.",
+            "error"
+        )
+
+        return redirect(
+            url_for("document.compare_all_upload")
+        )
+
+    documents = Document.query.filter(
+        Document.id.in_(document_ids),
+        Document.user_id == current_user.id,
+        Document.status == "processed"
     ).order_by(
         Document.id.asc()
     ).all()
@@ -889,12 +1109,12 @@ def compare_all():
     if len(documents) < 2:
 
         flash(
-            "You need at least two documents to compare.",
+            "At least two uploaded documents must be processed successfully.",
             "error"
         )
 
         return redirect(
-            url_for("auth.dashboard")
+            url_for("document.compare_all_upload")
         )
 
     comparison_results = []

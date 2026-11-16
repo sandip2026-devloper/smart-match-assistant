@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Upload Documents - Smart Match Assistant
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f5f3ff,
+                    #e0f2fe
+                );
+
+            min-height: 100vh;
+
+            color: #172033;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .top-header {
+
+            width: 100%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed,
+                    #2563eb
+                );
+
+            color: white;
+
+            padding: 17px 35px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            box-shadow:
+                0 5px 20px
+                rgba(37, 99, 235, 0.25);
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .brand-icon {
+
+            width: 45px;
+
+            height: 45px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255, 255, 255, 0.18);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 23px;
+        }
+
+
+        .brand h1 {
+
+            margin: 0;
+
+            font-size: 23px;
+
+            letter-spacing: 1px;
+        }
+
+
+        .user-area {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .user-name {
+
+            font-weight: 600;
+        }
+
+
+        .logout-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 10px 16px;
+
+            border-radius: 10px;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            background:
+                rgba(255, 255, 255, 0.15);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.35);
+
+            transition: 0.2s;
+        }
+
+
+        .logout-button:hover {
+
+            background: white;
+
+            color: #4f46e5;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .page-container {
+
+            width: 92%;
+
+            max-width: 1000px;
+
+            margin: 35px auto 60px;
+        }
+
+
+        .page-heading {
+
+            margin-bottom: 25px;
+        }
+
+
+        .page-heading h2 {
+
+            margin: 0 0 8px;
+
+            font-size: 30px;
+
+            color: #1e1b4b;
+        }
+
+
+        .page-heading p {
+
+            margin: 0;
+
+            color: #64748b;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================
+           FLASH MESSAGE
+        ========================= */
+
+        .flash-message {
+
+            padding: 13px 16px;
+
+            margin-bottom: 18px;
+
+            border-radius: 11px;
+
+            background: #fef2f2;
+
+            border:
+                1px solid #fecaca;
+
+            color: #991b1b;
+        }
+
+
+        /* =========================
+           UPLOAD CARD
+        ========================= */
+
+        .upload-card {
+
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 32px;
+
+            box-shadow:
+                0 15px 35px
+                rgba(30, 41, 59, 0.10);
+
+            border:
+                1px solid #e5e7eb;
+        }
+
+
+        .card-heading {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .card-icon {
+
+            width: 50px;
+
+            height: 50px;
+
+            border-radius: 14px;
+
+            background: #ede9fe;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 25px;
+        }
+
+
+        .card-heading h3 {
+
+            margin: 0;
+
+            color: #1f2937;
+
+            font-size: 21px;
+        }
+
+
+        /* =========================
+           DROP ZONE
+        ========================= */
+
+        .drop-zone {
+
+            border:
+                2px dashed #a5b4fc;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f8faff,
+                    #faf5ff
+                );
+
+            padding: 45px 25px;
+
+            text-align: center;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+        }
+
+
+        .drop-zone:hover {
+
+            border-color: #6366f1;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f5f3ff
+                );
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        .drop-zone.drag-over {
+
+            border-color: #4f46e5;
+
+            background: #eef2ff;
+
+            transform: scale(1.01);
+        }
+
+
+        .upload-icon {
+
+            width: 72px;
+
+            height: 72px;
+
+            margin: 0 auto 18px;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 32px;
+
+            box-shadow:
+                0 10px 22px
+                rgba(79, 70, 229, 0.22);
+        }
+
+
+        .drop-zone h4 {
+
+            margin: 0 0 8px;
+
+            color: #1f2937;
+
+            font-size: 20px;
+        }
+
+
+        .drop-zone p {
+
+            margin: 0 0 18px;
+
+            color: #64748b;
+
+            font-size: 14px;
+        }
+
+
+        .choose-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 12px 22px;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: white;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 7px 17px
+                rgba(79, 70, 229, 0.20);
+        }
+
+
+        #files {
+
+            display: none;
+        }
+
+
+        .file-limit {
+
+            margin-top: 14px;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           SELECTED FILES
+        ========================= */
+
+        .selected-section {
+
+            margin-top: 25px;
+
+            display: none;
+        }
+
+
+        .selected-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 12px;
+        }
+
+
+        .selected-header h4 {
+
+            margin: 0;
+
+            color: #374151;
+
+            font-size: 16px;
+        }
+
+
+        .file-count {
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            background: #ede9fe;
+
+            color: #6d28d9;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .file-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 9px;
+        }
+
+
+        .file-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 12px 14px;
+
+            border-radius: 11px;
+
+            background: #f8fafc;
+
+            border:
+                1px solid #e2e8f0;
+        }
+
+
+        .file-name {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            min-width: 0;
+
+            color: #334155;
+
+            font-size: 14px;
+        }
+
+
+        .file-name span {
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .remove-file {
+
+            border: none;
+
+            background: #fee2e2;
+
+            color: #b91c1c;
+
+            width: 30px;
+
+            height: 30px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+            flex-shrink: 0;
+        }
+
+
+        .remove-file:hover {
+
+            background: #fecaca;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .button-row {
+
+            margin-top: 28px;
+
+            display: flex;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .upload-button {
+
+            border: none;
+
+            padding: 13px 24px;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 8px 18px
+                rgba(79, 70, 229, 0.22);
+
+            transition: 0.2s;
+        }
+
+
+        .upload-button:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 11px 23px
+                rgba(79, 70, 229, 0.30);
+        }
+
+
+        .back-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 13px 20px;
+
+            border-radius: 11px;
+
+            text-decoration: none;
+
+            background: #f1f5f9;
+
+            color: #475569;
+
+            font-weight: 700;
+
+            border:
+                1px solid #e2e8f0;
+        }
+
+
+        .back-button:hover {
+
+            background: #e2e8f0;
+        }
+
+
+        /* =========================
+           INFO BOX
+        ========================= */
+
+        .info-box {
+
+            margin-top: 25px;
+
+            padding: 18px;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f5f3ff
+                );
+
+            border:
+                1px solid #ddd6fe;
+        }
+
+
+        .info-box strong {
+
+            color: #4f46e5;
+        }
+
+
+        .info-box p {
+
+            margin: 6px 0 0;
+
+            color: #64748b;
+
+            line-height: 1.5;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 650px) {
+
+            .top-header {
+
+                padding: 15px 18px;
+            }
+
+
+            .brand h1 {
+
+                font-size: 18px;
+            }
+
+
+            .user-name {
+
+                display: none;
+            }
+
+
+            .page-container {
+
+                width: 94%;
+
+                margin-top: 25px;
+            }
+
+
+            .upload-card {
+
+                padding: 23px;
+            }
+
+
+            .page-heading h2 {
+
+                font-size: 25px;
+            }
+
+
+            .button-row {
+
+                flex-direction: column;
+            }
+
+
+            .upload-button,
+            .back-button {
+
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header class="top-header">
+
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🔗
+            </div>
+
+            <h1>
+                SMART MATCH ASSISTANT
+            </h1>
+
+        </div>
+
+
+        <div class="user-area">
+
+            <span class="user-name">
+                👤 {{ current_user.name }}
+            </span>
+
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="logout-button"
+            >
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main class="page-container">
+
+
+        <div class="page-heading">
+
+            <h2>
+                Every Document vs Every Other
+            </h2>
+
+            <p>
+                Upload two or more documents. Only the documents
+                selected in this upload will be compared with
+                each other.
+            </p>
+
+        </div>
+
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% for category, message in messages %}
+
+                <div class="flash-message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+
+
+        <section class="upload-card">
+
+
+            <div class="card-heading">
+
+                <div class="card-icon">
+                    📤
+                </div>
+
+                <h3>
+                    Upload Documents
+                </h3>
+
+            </div>
+
+
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                id="uploadForm"
+            >
+
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+
+                <!-- DROP ZONE -->
+
+                <div
+                    class="drop-zone"
+                    id="dropZone"
+                >
+
+                    <div class="upload-icon">
+                        📁
+                    </div>
+
+
+                    <h4>
+                        Select your documents
+                    </h4>
+
+
+                    <p>
+                        Drag and drop files here or choose
+                        files from your computer
+                    </p>
+
+
+                    <label
+                        for="files"
+                        class="choose-button"
+                    >
+                        📂 Choose Files
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="files"
+                        name="files"
+                        multiple
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.png,.jpg,.jpeg"
+                    >
+
+
+                    <div class="file-limit">
+                        PDF, Word, Excel, TXT or Image files
+                        • Maximum 10 MB per file
+                    </div>
+
+                </div>
+
+
+
+                <!-- SELECTED FILES -->
+
+                <div
+                    class="selected-section"
+                    id="selectedSection"
+                >
+
+                    <div class="selected-header">
+
+                        <h4>
+                            Selected Documents
+                        </h4>
+
+                        <span
+                            class="file-count"
+                            id="fileCount"
+                        >
+                            0 files
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="file-list"
+                        id="fileList"
+                    >
+                    </div>
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="button-row">
+
+                    <button
+                        type="submit"
+                        class="upload-button"
+                    >
+                        🚀 Upload & Start Comparison
+                    </button>
+
+
+                    <a
+                        href="{{ url_for('auth.dashboard') }}"
+                        class="back-button"
+                    >
+                        ← Back to Dashboard
+                    </a>
+
+                </div>
+
+
+            </form>
+
+
+
+            <div class="info-box">
+
+                <strong>
+                    💡 Important
+                </strong>
+
+                <p>
+                    Select at least two documents. The system
+                    will compare only the documents you select
+                    in this upload session, not your older
+                    stored documents.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- FILE SELECTION SCRIPT -->
+
+    <script>
+
+        const fileInput =
+            document.getElementById("files");
+
+        const dropZone =
+            document.getElementById("dropZone");
+
+        const fileList =
+            document.getElementById("fileList");
+
+        const selectedSection =
+            document.getElementById("selectedSection");
+
+        const fileCount =
+            document.getElementById("fileCount");
+
+
+        let selectedFiles = [];
+
+
+        function updateFileInput() {
+
+            const dataTransfer =
+                new DataTransfer();
+
+            selectedFiles.forEach(
+                function(file) {
+
+                    dataTransfer.items.add(file);
+
+                }
+            );
+
+            fileInput.files =
+                dataTransfer.files;
+        }
+
+
+        function renderFiles() {
+
+            fileList.innerHTML = "";
+
+
+            if (selectedFiles.length === 0) {
+
+                selectedSection.style.display =
+                    "none";
+
+                fileCount.textContent =
+                    "0 files";
+
+                return;
+            }
+
+
+            selectedSection.style.display =
+                "block";
+
+
+            fileCount.textContent =
+                selectedFiles.length +
+                (
+                    selectedFiles.length === 1
+                        ? " file"
+                        : " files"
+                );
+
+
+            selectedFiles.forEach(
+                function(file, index) {
+
+                    const item =
+                        document.createElement("div");
+
+                    item.className =
+                        "file-item";
+
+
+                    const name =
+                        document.createElement("div");
+
+                    name.className =
+                        "file-name";
+
+
+                    name.innerHTML =
+                        "📄";
+
+
+                    const nameText =
+                        document.createElement("span");
+
+                    nameText.textContent =
+                        file.name;
+
+
+                    name.appendChild(nameText);
+
+
+                    const remove =
+                        document.createElement("button");
+
+                    remove.type =
+                        "button";
+
+                    remove.className =
+                        "remove-file";
+
+                    remove.textContent =
+                        "✕";
+
+
+                    remove.addEventListener(
+                        "click",
+                        function() {
+
+                            selectedFiles.splice(
+                                index,
+                                1
+                            );
+
+                            updateFileInput();
+
+                            renderFiles();
+
+                        }
+                    );
+
+
+                    item.appendChild(name);
+
+                    item.appendChild(remove);
+
+                    fileList.appendChild(item);
+
+                }
+            );
+        }
+
+
+        fileInput.addEventListener(
+            "change",
+            function() {
+
+                const newFiles =
+                    Array.from(
+                        fileInput.files
+                    );
+
+
+                newFiles.forEach(
+                    function(file) {
+
+                        const exists =
+                            selectedFiles.some(
+                                function(existingFile) {
+
+                                    return (
+                                        existingFile.name ===
+                                        file.name
+                                        &&
+                                        existingFile.size ===
+                                        file.size
+                                    );
+
+                                }
+                            );
+
+
+                        if (!exists) {
+
+                            selectedFiles.push(file);
+
+                        }
+
+                    }
+                );
+
+
+                updateFileInput();
+
+                renderFiles();
+
+            }
+        );
+
+
+        dropZone.addEventListener(
+            "dragover",
+            function(event) {
+
+                event.preventDefault();
+
+                dropZone.classList.add(
+                    "drag-over"
+                );
+
+            }
+        );
+
+
+        dropZone.addEventListener(
+            "dragleave",
+            function() {
+
+                dropZone.classList.remove(
+                    "drag-over"
+                );
+
+            }
+        );
+
+
+        dropZone.addEventListener(
+            "drop",
+            function(event) {
+
+                event.preventDefault();
+
+                dropZone.classList.remove(
+                    "drag-over"
+                );
+
+
+                const droppedFiles =
+                    Array.from(
+                        event.dataTransfer.files
+                    );
+
+
+                droppedFiles.forEach(
+                    function(file) {
+
+                        const exists =
+                            selectedFiles.some(
+                                function(existingFile) {
+
+                                    return (
+                                        existingFile.name ===
+                                        file.name
+                                        &&
+                                        existingFile.size ===
+                                        file.size
+                                    );
+
+                                }
+                            );
+
+
+                        if (!exists) {
+
+                            selectedFiles.push(file);
+
+                        }
+
+                    }
+                );
+
+
+                updateFileInput();
+
+                renderFiles();
+
+            }
+        );
+
+
+        document
+            .getElementById("uploadForm")
+            .addEventListener(
+                "submit",
+                function(event) {
+
+                    if (
+                        selectedFiles.length < 2
+                    ) {
+
+                        event.preventDefault();
+
+                        alert(
+                            "Please select at least two documents."
+                        );
+
+                    }
+
+                }
+            );
+
+    </script>
+
+
+</body>
+
+</html>
