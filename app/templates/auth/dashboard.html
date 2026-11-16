@@ -102,11 +102,8 @@
                         secondary documents to find matching records.
                     </p>
 
-                    <a
-                        href="{{ url_for('document.upload') }}"
-                        class="start-button"
-                    >
-                        Start Matching
+                    <a href="{{ url_for('document.match') }}">
+                         Start Matching
                     </a>
 
                 </div>
@@ -131,11 +128,11 @@
                     </p>
 
                     <a
-                        href="{{ url_for('document.upload') }}"
-                        class="start-button secondary-button"
-                    >
-                        Start Comparison
-                    </a>
+    href="{{ url_for('document.compare_all') }}"
+    class="start-button secondary-button"
+>
+    Start Comparison
+</a>
 
                 </div>
 

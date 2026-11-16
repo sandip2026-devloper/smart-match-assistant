@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Comparison Results - Smart Match Assistant</title>
+</head>
+
+<body>
+
+    <h1>Every Document vs Every Other</h1>
+
+    <p>
+        Comparison completed successfully.
+    </p>
+
+    {% if comparison_results %}
+
+        <p>
+            Total comparisons:
+            {{ comparison_results|length }}
+        </p>
+
+        {% for result in comparison_results %}
+
+            <hr>
+
+            <h2>
+                {{ result.main_document.original_name }}
+                vs
+                {{ result.secondary_document.original_name }}
+            </h2>
+
+            <p>
+                Main Records:
+                {{ result.main_record_count }}
+            </p>
+
+            <p>
+                Secondary Records:
+                {{ result.secondary_record_count }}
+            </p>
+
+            <h3>Matching Summary</h3>
+
+            <p>
+                Matched:
+                {{ result.matched_count }}
+            </p>
+
+            <p>
+                Unmatched:
+                {{ result.unmatched_count }}
+            </p>
+
+            <p>
+                Duplicate / Ambiguous:
+                {{ result.duplicate_count }}
+            </p>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            No comparison results were generated.
+        </p>
+
+    {% endif %}
+
+    <br>
+
+    <a href="{{ url_for('auth.dashboard') }}">
+        Back to Dashboard
+    </a>
+
+</body>
+</html>

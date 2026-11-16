@@ -133,7 +133,6 @@ def validate_file_content(
 
             return True
 
-
         if extension == "pdf":
 
             with open(
@@ -144,7 +143,6 @@ def validate_file_content(
                 header = file.read(5)
 
             return header == b"%PDF-"
-
 
         if extension == "png":
 
@@ -158,7 +156,6 @@ def validate_file_content(
             return header == (
                 b"\x89PNG\r\n\x1a\n"
             )
-
 
         if extension in {
             "jpg",
@@ -174,7 +171,6 @@ def validate_file_content(
 
             return header == b"\xff\xd8\xff"
 
-
         if extension == "txt":
 
             with open(
@@ -187,9 +183,7 @@ def validate_file_content(
 
             return True
 
-
         return False
-
 
     except Exception:
 
@@ -220,9 +214,7 @@ def upload():
                 url_for("document.upload")
             )
 
-
         file = request.files["file"]
-
 
         if not file or not file.filename:
 
@@ -234,7 +226,6 @@ def upload():
             return redirect(
                 url_for("document.upload")
             )
-
 
         if not allowed_file(
             file.filename
@@ -249,12 +240,10 @@ def upload():
                 url_for("document.upload")
             )
 
-
         extension = file.filename.rsplit(
             ".",
             1
         )[1].lower()
-
 
         file.seek(
             0,
@@ -264,7 +253,6 @@ def upload():
         file_size = file.tell()
 
         file.seek(0)
-
 
         if file_size > MAX_FILE_SIZE:
 
@@ -277,11 +265,9 @@ def upload():
                 url_for("document.upload")
             )
 
-
         safe_original_name = secure_filename(
             file.filename
         )
-
 
         if not safe_original_name:
 
@@ -294,11 +280,9 @@ def upload():
                 url_for("document.upload")
             )
 
-
         stored_name = (
             f"{uuid.uuid4().hex}.{extension}"
         )
-
 
         upload_folder = get_upload_folder()
 
@@ -307,19 +291,16 @@ def upload():
             exist_ok=True
         )
 
-
         file_path = os.path.join(
             upload_folder,
             stored_name
         )
-
 
         try:
 
             file.save(
                 file_path
             )
-
 
             if not validate_file_content(
                 file_path,
@@ -341,7 +322,6 @@ def upload():
                     url_for("document.upload")
                 )
 
-
             new_document = Document(
                 user_id=current_user.id,
                 original_name=safe_original_name,
@@ -350,13 +330,11 @@ def upload():
                 status="uploaded"
             )
 
-
             db.session.add(
                 new_document
             )
 
             db.session.commit()
-
 
             processing_result = (
                 process_and_store_document(
@@ -364,7 +342,6 @@ def upload():
                     user_id=current_user.id
                 )
             )
-
 
             if processing_result.get(
                 "success"
@@ -389,16 +366,13 @@ def upload():
                     "error"
                 )
 
-
             return redirect(
                 url_for("document.upload")
             )
 
-
         except Exception as error:
 
             db.session.rollback()
-
 
             if os.path.exists(file_path):
 
@@ -412,7 +386,6 @@ def upload():
 
                     pass
 
-
             flash(
                 f"Upload failed: {error}",
                 "error"
@@ -421,7 +394,6 @@ def upload():
             return redirect(
                 url_for("document.upload")
             )
-
 
     return render_template(
         "documents/upload.html"
@@ -441,30 +413,24 @@ def download_document(
         document_id
     )
 
-
     if document_record is None:
         abort(404)
-
 
     if document_record.user_id != current_user.id:
         abort(403)
 
-
     upload_folder = get_upload_folder()
-
 
     file_path = os.path.join(
         upload_folder,
         document_record.stored_name
     )
 
-
     if not os.path.isfile(
         file_path
     ):
 
         abort(404)
-
 
     return send_from_directory(
         upload_folder,
@@ -473,20 +439,23 @@ def download_document(
         download_name=document_record.original_name
     )
 
+
 @document.route(
     "/match",
     methods=["GET", "POST"]
 )
 @login_required
 def match():
-   
+
     documents = Document.query.filter_by(
-        user_id=current_user.id
+        user_id=current_user.id,
+        status="processed"
     ).order_by(
-        Document.id.desc()
+        Document.id.asc()
     ).all()
 
     if request.method == "GET":
+
         return render_template(
             "documents/match.html",
             documents=documents
@@ -504,6 +473,7 @@ def match():
         not main_document_id
         or not secondary_document_id
     ):
+
         flash(
             "Please select both documents.",
             "error"
@@ -514,6 +484,7 @@ def match():
         )
 
     try:
+
         main_document_id = int(
             main_document_id
         )
@@ -523,6 +494,7 @@ def match():
         )
 
     except ValueError:
+
         flash(
             "Invalid document selection.",
             "error"
@@ -555,6 +527,7 @@ def match():
         abort(403)
 
     if main_document_id == secondary_document_id:
+
         flash(
             "Main and Secondary documents must be different.",
             "error"
@@ -571,6 +544,7 @@ def match():
     )
 
     if not result.get("success"):
+
         flash(
             result.get(
                 "error",
@@ -628,31 +602,26 @@ def match():
         txt_filename
     )
 
-    # XLSX Export
     export_result = export_match_result_to_xlsx(
         result,
         output_path
     )
 
-    # PDF Export
     pdf_export_result = export_match_result_to_pdf(
         result,
         pdf_path
     )
 
-    # DOCX Export
     docx_export_result = export_match_result_to_docx(
         result,
         docx_path
     )
 
-    # TXT Export
     txt_export_result = export_match_result_to_txt(
         result,
         txt_path
     )
 
-    # Store result ownership
     if export_result.get("success"):
 
         match_result_record = MatchResult(
@@ -681,6 +650,7 @@ def match():
         secondary_document_name=secondary_document.original_name
     )
 
+
 @document.route(
     "/download-result/<filename>"
 )
@@ -693,43 +663,35 @@ def download_result(filename):
 
         abort(404)
 
-
     safe_filename = secure_filename(
         filename
     )
 
-
     if safe_filename != filename:
 
         abort(404)
-
 
     match_result = MatchResult.query.filter_by(
         filename=safe_filename,
         user_id=current_user.id
     ).first()
 
-
     if match_result is None:
 
         abort(403)
 
-
     output_folder = get_output_folder()
-
 
     file_path = os.path.join(
         output_folder,
         safe_filename
     )
 
-
     if not os.path.isfile(
         file_path
     ):
 
         abort(404)
-
 
     return send_from_directory(
         output_folder,
@@ -751,16 +713,13 @@ def download_pdf_result(filename):
 
         abort(404)
 
-
     safe_filename = secure_filename(
         filename
     )
 
-
     if safe_filename != filename:
 
         abort(404)
-
 
     xlsx_filename = (
         os.path.splitext(
@@ -769,33 +728,27 @@ def download_pdf_result(filename):
         + ".xlsx"
     )
 
-
     match_result = MatchResult.query.filter_by(
         filename=xlsx_filename,
         user_id=current_user.id
     ).first()
 
-
     if match_result is None:
 
         abort(403)
 
-
     output_folder = get_output_folder()
-
 
     file_path = os.path.join(
         output_folder,
         safe_filename
     )
 
-
     if not os.path.isfile(
         file_path
     ):
 
         abort(404)
-
 
     return send_from_directory(
         output_folder,
@@ -817,16 +770,13 @@ def download_docx_result(filename):
 
         abort(404)
 
-
     safe_filename = secure_filename(
         filename
     )
 
-
     if safe_filename != filename:
 
         abort(404)
-
 
     xlsx_filename = (
         os.path.splitext(
@@ -835,33 +785,27 @@ def download_docx_result(filename):
         + ".xlsx"
     )
 
-
     match_result = MatchResult.query.filter_by(
         filename=xlsx_filename,
         user_id=current_user.id
     ).first()
 
-
     if match_result is None:
 
         abort(403)
 
-
     output_folder = get_output_folder()
-
 
     file_path = os.path.join(
         output_folder,
         safe_filename
     )
 
-
     if not os.path.isfile(
         file_path
     ):
 
         abort(404)
-
 
     return send_from_directory(
         output_folder,
@@ -883,16 +827,13 @@ def download_txt_result(filename):
 
         abort(404)
 
-
     safe_filename = secure_filename(
         filename
     )
 
-
     if safe_filename != filename:
 
         abort(404)
-
 
     xlsx_filename = (
         os.path.splitext(
@@ -901,26 +842,21 @@ def download_txt_result(filename):
         + ".xlsx"
     )
 
-
     match_result = MatchResult.query.filter_by(
         filename=xlsx_filename,
         user_id=current_user.id
     ).first()
 
-
     if match_result is None:
 
         abort(403)
 
-
     output_folder = get_output_folder()
-
 
     file_path = os.path.join(
         output_folder,
         safe_filename
     )
-
 
     if not os.path.isfile(
         file_path
@@ -928,10 +864,71 @@ def download_txt_result(filename):
 
         abort(404)
 
-
     return send_from_directory(
         output_folder,
         safe_filename,
         as_attachment=True,
         download_name=safe_filename
+    )
+
+
+@document.route(
+    "/compare-all",
+    methods=["GET"]
+)
+@login_required
+def compare_all():
+
+    documents = Document.query.filter_by(
+        user_id=current_user.id,
+        status="processed"
+    ).order_by(
+        Document.id.asc()
+    ).all()
+
+    if len(documents) < 2:
+
+        flash(
+            "You need at least two documents to compare.",
+            "error"
+        )
+
+        return redirect(
+            url_for("auth.dashboard")
+        )
+
+    comparison_results = []
+
+    for i in range(len(documents)):
+
+        for j in range(i + 1, len(documents)):
+
+            print(
+                f"COMPARING {documents[i].id} vs {documents[j].id}",
+                flush=True
+            )
+
+            main_document = documents[i]
+            secondary_document = documents[j]
+
+            result = match_document_pair(
+                main_document_id=main_document.id,
+                secondary_document_id=secondary_document.id,
+                user_id=current_user.id
+            )
+
+            if result.get("success"):
+
+                comparison_results.append(
+                    result
+                )
+
+            print(
+                f"DONE {documents[i].id} vs {documents[j].id}",
+                flush=True
+            )
+
+    return render_template(
+        "documents/compare_all_result.html",
+        comparison_results=comparison_results
     )
